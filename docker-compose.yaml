@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: .devcontainer
+      dockerfile: Dockerfile
+    container_name: test-github-actions-0202-vite_frontend_container
+    ports:
+      # Storybook
+      - "6006:6006"
+      # Vite dev
+      - "5173:5173"
+      # Vite preview
+      - "4173:4173"
+    volumes:
+      - ".:/home/node/workspace"
+      - "test-vite_frontend_node_modules:/home/node/workspace/app/frontend/node_modules"
+    working_dir: /home/node/workspace/app/frontend
+    tty: true
+    stdin_open: true
+
+volumes:
+  test-vite_frontend_node_modules:
