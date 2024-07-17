@@ -1,0 +1,48 @@
+name: Events Demo 1
+on: 
+  pull_request:
+    types: [opened]
+  workflow_dispatch:
+  push:
+    # イベントフィルター　より詳細な状態のイベントを定義する　例えば、すべてのブランチではなく特定のブランチにプルリクエストが来た場合など
+    branches:
+      - main
+      - 'dev-*' # like dev-new, dev-this-is-new
+      - 'dev/**' # /がつく連続した任意の文字列 like dev/#1/button
+    # 特定のパスに存在するファイルの変更が一つでもあればトリガーされないプロパティ
+    paths-ignore:
+      - '.github/workflows/*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependaycies
+        run: npm ci
+        working-directory: app/frontend
+      - name: Run tests
+        run : npm run test
+        working-directory: app/frontend
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependaycies
+        run: npm ci
+        working-directory: app/frontend
+      - name: Build project
+        run: npm run build
+        working-directory: app/frontend
+      - name: Deploy project
+        run: echo "Deploy project ..."
