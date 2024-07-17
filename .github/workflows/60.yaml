@@ -1,10 +1,15 @@
 name: Events Demo 1
 on: 
   pull_request:
+    # アクティビティタイプ　イベントの中でもより詳細なイベントを指定できる機能　例えば、すべてのプルリクエストではなくプルリクエストがクローズしたときと開いたときなど
     types: [opened]
+    branches:
+      - main
+      - 'dev-*' # like dev-new, dev-this-is-new
+      - 'dev/**' # /がつく連続した任意の文字列 like dev/#1/button
   workflow_dispatch:
   push:
-    # イベントフィルター　より詳細な状態のイベントを定義する　例えば、すべてのブランチではなく特定のブランチにプルリクエストが来た場合など
+    # イベントフィルター　発火するイベントに対してフィルターする機能　例えば、すべてのブランチではなく特定のブランチにプルリクエストが来た場合など
     branches:
       - main
       - 'dev-*' # like dev-new, dev-this-is-new
