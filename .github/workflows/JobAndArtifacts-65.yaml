@@ -41,8 +41,8 @@ jobs:
           name: dist-files
           # package.jsonは冗長である。
           path: |
-            ./frontend/dist
-            ./frontend/package.json
+            ./app/frontend/dist
+            ./app/frontend/package.json
   deploy:
     runs-on: ubuntu-latest
     needs: build
