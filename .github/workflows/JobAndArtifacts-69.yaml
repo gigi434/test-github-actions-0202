@@ -1,0 +1,58 @@
+name: artifacts deploy 1
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependaycies
+        run: npm ci
+        working-directory: app/frontend
+      - name: Run tests
+        run : npm run test
+        working-directory: app/frontend
+      - name: Uploading artifacts
+        run : npm run build
+        working-directory: app/frontend
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependancies
+        run: npm ci
+        working-directory: app/frontend
+      - name: Build website
+        run: npm run build
+        working-directory: app/frontend
+      # 生成物をアップロードするにはGithubチームが開発しているActionsがあるため、これを使用する
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          # package.jsonは冗長である。
+          path: |
+            ./app/frontend/dist
+            ./app/frontend/package.json
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: ./app/frontend/dist
+      - name: ls
+        run : ls
+      - name: Deploy project
+        run: echo "Deploy project ..."
