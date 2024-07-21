@@ -1,65 +1,65 @@
-name: Job and artifacts 1
-on: 
-  push:
-    branches:
-      - main
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install dependaycies
-        run: npm ci
-        working-directory: app/frontend
-      - name: Run tests
-        run : npm run test
-        working-directory: app/frontend
-      - name: Uploading artifacts
-        run : npm run build
-        working-directory: app/frontend
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    outputs:
-      # 保存したGithubAcitionsのファイルをscript-fileとしてbuildというジョブの成果物としてほかのジョブに公開して利用できるようにする
-      script-file: ${{ steps.publish.outputs.script-file }}
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Install dependancies
-        run: npm ci
-        working-directory: app/frontend
-      - name: Build website
-        run: npm run build
-        working-directory: app/frontend
-      - name: Publish JS filename
-        id: publish
-        # JSファイルのファイルネームをscript-fileというファイルに書き込み、このファイルをGithubActionsに保存する
-        run: find ./app/frontend/dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-files
-          path: |
-            ./app/frontend/dist
-            ./app/frontend/package.json
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-files
-          path: ./app/frontend/dist
-      - name: ls
-        run : ls
-      - name: Output filename
-        run : echo ${{ needs.build.outputs.script-file}}
-      - name: Deploy project
-        run: echo "Deploy project ..."
+# name: Job and artifacts 1
+# on: 
+#   push:
+#     branches:
+#       - main
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Get code
+#         uses: actions/checkout@v3
+#       - name: Set up Node
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#       - name: Install dependaycies
+#         run: npm ci
+#         working-directory: app/frontend
+#       - name: Run tests
+#         run : npm run test
+#         working-directory: app/frontend
+#       - name: Uploading artifacts
+#         run : npm run build
+#         working-directory: app/frontend
+#   build:
+#     needs: test
+#     runs-on: ubuntu-latest
+#     outputs:
+#       # 保存したGithubAcitionsのファイルをscript-fileとしてbuildというジョブの成果物としてほかのジョブに公開して利用できるようにする
+#       script-file: ${{ steps.publish.outputs.script-file }}
+#     steps:
+#       - name: Get code
+#         uses: actions/checkout@v3
+#       - name: Install dependancies
+#         run: npm ci
+#         working-directory: app/frontend
+#       - name: Build website
+#         run: npm run build
+#         working-directory: app/frontend
+#       - name: Publish JS filename
+#         id: publish
+#         # JSファイルのファイルネームをscript-fileというファイルに書き込み、このファイルをGithubActionsに保存する
+#         run: find ./app/frontend/dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
+#       - name: Upload artifacts
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: dist-files
+#           path: |
+#             ./app/frontend/dist
+#             ./app/frontend/package.json
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: build
+#     steps:
+#       - name: Download artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: dist-files
+#           path: ./app/frontend/dist
+#       - name: ls
+#         run : ls
+#       - name: Output filename
+#         run : echo ${{ needs.build.outputs.script-file}}
+#       - name: Deploy project
+#         run: echo "Deploy project ..."
