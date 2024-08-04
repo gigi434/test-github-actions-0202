@@ -16,9 +16,11 @@ services:
     volumes:
       - ".:/home/node/workspace"
       - "test-vite_frontend_node_modules:/home/node/workspace/app/frontend/node_modules"
+      - "02_github_actions_secrets_node_modules:/home/node/workspace/app/02_github_actions_secrets/end/node_modules"
     working_dir: /home/node/workspace/app/frontend
     tty: true
     stdin_open: true
 
 volumes:
   test-vite_frontend_node_modules:
+  02_github_actions_secrets_node_modules:
