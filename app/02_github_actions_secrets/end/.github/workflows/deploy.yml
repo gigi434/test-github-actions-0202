@@ -4,9 +4,16 @@ on:
     branches:
       - main
       - dev
+# ワークフロー内のすべてのジョブで使用できる環境変数として設定できる
+env:
+  MONGODB_DB_NAME: gha-demo
 jobs:
   test:
-    environment: testing
+    # ジョブに環境変数を設定するとそのジョブにしか参照できない環境変数を設定できる
+    env:
+      MONGODB_CLUSTER_ADDRESS:
+      MONGODB_USERNAME:
+      MONGODB_PASSWORD:
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
