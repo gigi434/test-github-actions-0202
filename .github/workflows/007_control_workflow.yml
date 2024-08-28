@@ -32,6 +32,7 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
+        working-directory: app/007_control_workflow/end
       - name: Test code
         run: npm run test
       - name: Upload test report
