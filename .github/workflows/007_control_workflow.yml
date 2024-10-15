@@ -36,9 +36,13 @@ jobs:
         run: npm ci
         working-directory: app/007_control_workflow/end
       - name: Test code
+        id: run-tests
         run: npm run test
         working-directory: app/007_control_workflow/end
       - name: Upload test report
+        # ifを使用してある条件下における動作を決めることができる。下はテストの結果が失敗のときにJSONファイルを生成するもの
+        # outcomeであればステップの実行に失敗した場合でも失敗のままであるし、conclusionであれば成功になる
+        if: steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
