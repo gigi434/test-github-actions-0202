@@ -44,7 +44,7 @@ jobs:
         # outcomeであればステップの実行に失敗した場合でも失敗のままであるし、conclusionであれば成功になる
         # 状態を確認する関数を用いて失敗したときにという複合条件にすることで、前段階で失敗してもスキップされなくする
         if: failure() && steps.run-tests.outcome == 'failure'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: test.json
