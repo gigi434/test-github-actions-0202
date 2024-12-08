@@ -13,16 +13,12 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: node_modules
+          path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      # キャッシュミスしている＝依存関係が少しでも変わっているならCiを実行して依存関係にあるライブラリを再度インストールする
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-        working-directory: app/008_matrix/end
       - name: Lint code
         run: npm run lint
-        working-directory: app/008_matrix/end
   test:
     runs-on: ubuntu-latest
     steps:
@@ -36,20 +32,13 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        working-directory: app/008_matrix/end
       - name: Test code
-        id: run-tests
         run: npm run test
-        working-directory: app/008_matrix/end
       - name: Upload test report
-        # ifを使用してある条件下における動作を決めることができる。下はテストの結果が失敗のときにJSONファイルを生成するもの
-        # outcomeであればステップの実行に失敗した場合でも失敗のままであるし、conclusionであれば成功になる
-        # 状態を確認する関数を用いて失敗したときにという複合条件にすることで、前段階で失敗してもスキップされなくする
-        if: failure() && steps.run-tests.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: test-report
-          path: ./app/008_matrix/end/test.json
+          path: test.json
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -64,16 +53,14 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        working-directory: app/008_matrix/end
       - name: Build website
         id: build-website
         run: npm run build
-        working-directory: app/008_matrix/end
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dist-files
-          path: app/008_matrix/end/dist
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -82,17 +69,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist-files
-          path: app/008_matrix/end/dist
       - name: Output contents
         run: ls
       - name: Deploy
         run: echo "Deploying..."
-  report:
-    needs: [lint, deploy]
-    if: failure()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Output information
-        run: |
-          echo "Something went wrong"
-          echo "${{ toJson(github) }}"

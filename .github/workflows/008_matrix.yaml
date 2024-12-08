@@ -19,5 +19,7 @@ jobs:
           node-version: ${{ matrix.node-version}}
       - name: Install Dependancies
         run: npm ci
+        working-directory: app/007_control_workflow/end
       - name: Build Project
         run: npm run build
+        working-directory: app/007_control_workflow/end
