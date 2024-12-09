@@ -18,10 +18,10 @@ jobs:
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-        working-directory: app/008_matrix/end
+        working-directory: app/009_reusable/end
       - name: Lint code
         run: npm run lint
-        working-directory: app/008_matrix/end
+        working-directory: app/009_reusable/end
   test:
     runs-on: ubuntu-latest
     steps:
@@ -35,17 +35,17 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        working-directory: app/008_matrix/end
+        working-directory: app/009_reusable/end
       - name: Test code
         id: run-tests
         run: npm run test
-        working-directory: app/008_matrix/end
+        working-directory: app/009_reusable/end
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: ./app/008_matrix/end/test.json
+          path: ./app/009_reusable/end/test.json
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -60,16 +60,16 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        working-directory: app/008_matrix/end
+        working-directory: app/009_reusable/end
       - name: Build website
         id: build-website
         run: npm run build
-        working-directory: app/008_matrix/end
+        working-directory: app/009_reusable/end
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dist-files
-          path: app/008_matrix/end/dist
+          path: app/009_reusable/end/dist
   deploy:
     needs: build
     uses: ./.github/workflows/reusable.yaml
