@@ -15,7 +15,7 @@ jobs:
             operating-system: ubuntu-latest
         exclude:
           - node-version: 12
-            windows-latest: windows-latest
+            operating-system: windows-latest
     # githubコンテキストからでも参照できるが、マトリックスコンテキストからでも参照できる
     runs-on: ${{ matrix.operating-system}}
     steps:
