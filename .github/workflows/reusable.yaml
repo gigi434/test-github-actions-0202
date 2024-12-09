@@ -2,7 +2,7 @@ name: Reusable Deploy
 # ジョブから呼び出されるワークフローを定義できる。その場合は下記のようにGithubイベントをトリガーとして設定する
 on: workflow_call
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Output information
