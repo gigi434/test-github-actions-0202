@@ -8,6 +8,11 @@ on:
         required: false
         default: dist
         type: string
+      path:
+        description: The name of artifact path
+        required: true
+        default: app/frontend
+        type: string
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,6 +21,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.path }}
       - name: List files
         run: ls
         working-directory: app/009_reusable/end
