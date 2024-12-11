@@ -13,8 +13,14 @@ on:
         required: true
         default: app/frontend
         type: string
+    outputs:
+      result:
+        description: The name of deployment operation
+        value: ${{ jobs.deploy.outputs.outcome}}
 jobs:
   deploy:
+    outputs:
+      outcome: ${{ steps.set-result.outputs.step-result}}
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -27,3 +33,6 @@ jobs:
         working-directory: app/009_reusable/end
       - name: Output information
         run: echo "Deploying & uploading..."
+      - name: Set output operation
+        id: set-result
+        run: echo "::set-output name=step-result::success"
